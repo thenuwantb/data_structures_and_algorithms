@@ -5,3 +5,7 @@
 *html
 *pdf
 .venv
+
+/1_introduction/1_introduction_to_dsa_files/
+/2_arrays/2_arrays_introdcution_files
+/3_stack_queue_linked_list/stack_queue_linked_list_files
