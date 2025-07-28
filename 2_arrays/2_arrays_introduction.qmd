@@ -1,0 +1,366 @@
+---
+title: "Data Structures and Algorithms"
+subtitle: "Week 02 - Introduction to Arrays"
+author: "Thenuwan Jayasinghe"
+date: "July 9, 2025" 
+format:
+  revealjs:
+    slide-number: true
+    logo: ../data/logo/blue_green.png
+    footer: "&copy; Boffin Institute of Data Science"
+    css: ../css/custom.css
+title-slide-attributes:
+  data-background-color: "#001f3f"
+---
+
+# Computer Memory: The Basics
+
+## How RAM is Arranged
+::: {.incremental}
+* Computer memory consists of individual bytes, each with a unique, consecutive memory address.
+* Main memory (RAM) allows **random access**: retrieving byte #8675309 is as easy as retrieving byte #309.
+* Any individual byte can be stored or retrieved in $O(1)$ time.
+:::
+
+---
+
+## Why $O(1)$?
+::: {.incremental}
+* Direct address calculation.
+* No need to search sequentially.
+:::
+
+---
+
+# Time-Space Tradeoff
+
+## The Efficiency Dilemma
+
+::: {.incremental}
+* **Goal:** Best algorithm should use less space AND take less time.
+* **Reality:** Often, we cannot achieve both simultaneously.
+* This leads to a **time-space tradeoff**:
+    * Solve problems faster by using *more* memory.
+    * Solve problems with *less* memory by spending *more* time.
+    * Optimizing for at least one is key; achieving both is ideal.
+:::
+
+---
+
+## Time Space Tradeoff
+
+![Time Space Trade off](../data/images/arrays/time_space_complexity.png)
+
+---
+
+# Arrays: Introduction
+
+## Why Do We Need Arrays?
+
+::: {.incremental}
+
+* To efficiently keep track of a sequence of related objects.
+* Allows managing multiple related values under a single variable, instead of separate ones (e.g., `scores = [39, 33])`).
+* A group of related variables can be stored contiguously in a portion of the computer's memory.
+* This contiguous storage is known as an array
+
+:::
+
+---
+
+## Why Do We Need Arrays?
+
+::: {.incremental}
+
+* High Scores for a Game: Storing a sequence of high score entries.
+* Patient Records: Managing patient information assigned to beds in a hospital
+* Text Strings: Storing an ordered sequence of individual characters
+
+:::
+
+---
+
+## Issues with Traditional Arrays
+
+::: {.incremental}
+
+* Contiguous Storage: Requires a single, unbroken block of memory.
+* Fixed Size: Capacity must be declared in advance.
+* Inefficient Resizing: Increasing capacity is not computationally efficient as it typically requires copying all data to a new location.
+
+:::
+
+---
+
+## Compact Arrays
+
+::: {.incremental}
+
+* Directly store the data bits contiguously in memory.
+* Example: Python 
+
+  * str (strings) are compact arrays of characters.
+
+  * E.g., "USJ" stores 'U', 'S', 'J' in adjacent memory locations.
+
+* Efficient for slicing by index.
+
+* (NumPy arrays also utilize compact, contiguous storage for performance. Will be discussed later)
+
+:::
+---
+
+## Dynamic Arrays
+
+::: {.incremental}
+
+* Python lists are dynamic arrays.
+* They appear to have unlimited capacity, but internally manage fixed-size arrays.
+
+:::
+
+---
+
+## How Dynamic Arrays Grow: The Three Steps
+
+![Growing Dynamic Array (page 195)](../data/images/arrays/growing_dynamic_array.png)
+
+
+---
+
+## How Dynamic Arrays Grow: The Three Steps
+
+::: {.incremental}
+
+1. Allocate new array (B): A new, larger array is requested, typically twice the capacity of the existing full array.
+2. Copy elements (A to B): All elements from the old array (A) are copied to the new array (B)
+3. Reassign reference: The list's internal reference is updated to point to the new, larger array (B), and the old array (A) is eventually reclaimed by the system.
+
+:::
+
+---
+
+## Analogies for Dynamic Arrays
+
+::: {.incremental}
+* Hermit Crab: When a hermit crab outgrows its shell, it moves into a new, larger one. Python lists similarly acquire new, bigger internal arrays when their current ones are full.
+    * [Crabs Trade Shells in the Strangest Way | BBC Earth](https://youtu.be/f1dnocPQXDQ)
+    * [How Hermit Crabs Choose Their Shells](https://youtu.be/SArlfkFJhPg)
+
+* Growing Children's Clothes: Parents often buy clothes a bit larger, knowing children will grow. This extra room means most additions fit easily. Only when completely outgrown (array full) is a new, larger set of clothes (array) acquired
+
+:::
+
+---
+
+## Python List Internals: Referential Structure
+
+::: {.incremental}
+* Python lists are referential structures.
+* They store a contiguous sequence of memory addresses (references/pointers) to elements.
+* The actual data elements can be scattered anywhere in memory, not necessarily contiguous.
+* This allows lists to hold diverse element types (different sizes).
+
+:::
+
+---
+
+## Copying Python Lists (Shallow vs. Deep)
+
+::: {.incremental}
+* Shallow Copy (e.g., `list(original)` or `original[:]`)
+
+    * Creates a new outer list object.
+    * Shares references to the original nested mutable elements.
+    * Modifying a nested mutable element in the copy also changes the original.
+:::
+
+---
+
+## Copying Python Lists (Shallow vs. Deep)
+
+::: {.incremental}
+* Deep Copy (e.g., `copy.deepcopy(original)`)
+
+    * Creates a completely independent copy of the object.
+    * Recursively copies all nested mutable objects.
+    * Ensures full independence; changes in the copy do not affect the original.
+:::
+
+---
+
+## What is Asymptotic Performance
+
+::: {.incremental}
+* **It's not about exact seconds!** Instead, it's about how the time taken by an operation *grows* as the input size (e.g., list length `n`) gets bigger.
+* We use it to evaluate the relative efficiency of algorithms independently of hardware and software environments.
+
+:::
+
+---
+
+## Understanding Big-Oh Notation (O())
+
+::: {.incremental}
+* **Big-Oh Notation (O()):** A way to describe the *upper bound* or "worst-case scenario" growth of an algorithm's running time.
+* It allows us to ignore constant factors and less significant terms, focusing on the main factor affecting growth.
+    * Example: If an algorithm takes $8n + 5$ operations, we say it's $O(n)$ because for large $n$, the $8n$ term dominates, and constants are ignored.
+* **Why care?** It helps predict an algorithm's behavior and scalability for *large* amounts of data.
+:::
+
+---
+
+# Python List Performance: Adding Elements
+
+## `append(element)`: Adding to the End
+
+::: {.incremental}
+* **Asymptotic Performance:** $O(1)$ amortized time.
+* **Intuition:**
+    * Most appends are super fast: Python simply fills the next available slot in the underlying array.
+    * **The "Catch":** Occasionally, when the current underlying array is completely full, Python needs to allocate a *new, larger* array (typically double the size) and copy *all* existing elements to this new location.This single operation is expensive, taking $O(n)$ time where $n$ is the current number of elements.
+
+:::
+
+---
+
+## `append(element)`: Adding to the End
+
+::: {.incremental}
+* **Amortized Analysis:** The cost of that expensive re-sizing operation is "spread out" over many cheaper $O(1)$ append operations. This means that, *on average*, the cost of each `append()` is considered constant.
+:::
+
+---
+
+## `insert(index, element)`: Inserting at a Specific Index
+
+::: {.incremental}
+* **Asymptotic Performance:** $O(n)$ time in the worst case.
+* **Intuition:**
+    * When you insert an element into the middle or beginning of a list, Python must shift all subsequent elements one position to the right to make space for the new element.
+    * This shifting involves iterating through a portion of the list, which takes time proportional to the number of elements being shifted.
+
+:::
+
+---
+
+## `insert(index, element)`: Inserting at a Specific Index
+
+::: {.incremental}
+* **Worst Case:** Inserting at the very beginning of the list (`list.insert(0, element)`) requires shifting *all* `n` existing elements, resulting in $O(n)$ performance.
+
+:::
+
+---
+
+# Python List Performance: Removing Elements
+
+## `pop()`: Removing from the End
+
+::: {.incremental}
+* **Asymptotic Performance:** $O(1)$ amortized time.
+* **Intuition:**
+    * Removing the last element is very quick because no other elements need to be shifted.
+    * Similar to `append()`, there might be an occasional $O(n)$ cost if Python decides to shrink the underlying array to conserve memory after many `pop()` operations, but this cost is amortized over many operations, making the average cost constant.
+:::
+
+---
+
+## `pop(index)`: Removing from a Specific Index
+
+::: {.incremental}
+* **Asymptotic Performance:** $O(n)$ time in the worst case.
+* **Intuition:**
+    * When an element is removed from a specific index (other than the last), all subsequent elements must be shifted one position to the left to fill the gap.
+* **Worst Case:** Removing from the beginning (`list.pop(0)`) is the most expensive, as it requires shifting *all* remaining elements.
+:::
+
+---
+
+## `remove(value)`: Removing by Value
+
+::: {.incremental}
+* **Asymptotic Performance:** $O(n)$ time in the worst case.
+* **Intuition:**
+    * This operation involves two main steps:
+        1. **Searching:** Python must first search through the list from the beginning to find the *first occurrence* of the specified `value`. This search can take up to $O(n)$ time if the value is at the end or not present.
+        2. **Shifting:** Once found, the element is removed, and all subsequent elements are shifted to the left to fill the gap, similar to `pop(index)`, which takes another $O(n)$ in the worst case.
+    * Therefore, `remove(value)` is always an $O(n)$ operation in the worst case.
+:::
+
+---
+
+## `remove(value)`: Removing by Value
+
+::: {.incremental}
+
+  * Therefore, `remove(value)` is always an $O(n)$ operation in the worst case.
+
+:::
+
+---
+
+# Summary of Python List Performance
+
+## Key Operations Overview
+
+<span style="font-size: 0.8em;">
+
+| Operation                 | Asymptotic Performance | Intuition                                                                |
+| :------------------------ | :--------------------- | :---------------------------------------------------------------------- |
+| `list.append(element)`    | $O(1)$ amortized         | Fast, occasional re-sizing cost "amortized" over many operations.       |
+| `list.insert(index, element)` | $O(n)$                   | Requires shifting subsequent elements; worst at beginning.          |
+| `list.pop()`              | $O(1)$ amortized         | Fast, occasional shrinking cost "amortized" over many operations.     |
+| `list.pop(index)`         | $O(n)$                   | Requires shifting elements; worst at beginning.                          |
+| `list.remove(value)`      | $O(n)$                   | Involves searching for the value AND then shifting elements.            |
+| `len(list)`               | $O(1)$                   | Length is stored as a direct attribute.                                  |
+| `list[index]`             | $O(1)$                   | Direct memory address calculation using base address and index.         |
+| `value in list`           | $O(n)$                   | Requires scanning the list to find the value; worst if at end/not found. |
+
+
+---
+
+# Key Takeaways
+
+## Practical Implications of List Performance
+
+::: {.incremental}
+* Python lists are highly efficient for operations that occur at the *end* of the list (`append()`, `pop()`) due to their dynamic array implementation and amortized analysis.
+* Operations involving the *middle* or *beginning* of a large list (`insert()`, `pop(index)`, `remove()`) can be significantly slower (linear time) because they often require shifting many elements.
+
+:::
+
+---
+
+## Practical Implications of List Performance
+
+::: {.incremental}
+
+* Asymptotic analysis (Big-Oh notation) is crucial for understanding how algorithms and data structures will perform with *large-scale* inputs, helping us choose the right tools for the job.
+* For tasks requiring frequent insertions/deletions in the middle, other data structures (discussed in later lectures) might be more suitable.
+
+:::
+
+---
+
+## References
+
+Chapter 5. Data Structures and Algorithms in Python | Book by Michael H. Goldwasser, Michael T. Goodrich, and Roberto Tamassia
+
+
+---
+
+## {.center #logo-end-slide data-background-color="#001f3f"}
+
+![](../data/logo/blue_green.png)
+
+Boffin Institute of Data Science
+
+thenuwanj@boffin.lk
+
+
+
+
+
+
+

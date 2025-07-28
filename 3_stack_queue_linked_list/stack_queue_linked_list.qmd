@@ -1,0 +1,325 @@
+---
+title: "Fundamental Data Structures: Stacks, Queues, and Deques"
+subtitle: "Addressing List Performance Limitations"
+author: "Thenuwan Jayasinghe"
+date: "July 16, 2025"
+format:
+  revealjs:
+    slide-number: true
+    logo: ../data/logo/blue_green.png
+    footer: "© Boffin Institute of Data Science"
+    css: ../css/custom.css
+title-slide-attributes:
+  data-background-color: "#001f3f"
+---
+
+# Introduction: Beyond Basic Lists
+
+## Recalling List Performance
+
+::: {.incremental}
+* In previous discussions, we explored Python lists as dynamic arrays.
+* While versatile, lists exhibit specific performance characteristics:
+    * `append()` and `pop()` (from end): $O(1)$ amortized time.
+    * `insert(index, element)`: $O(n)$ time in worst-case, especially at the beginning.
+    * `pop(index)`: $O(n)$ time in worst-case, especially from the beginning.
+    * `remove(value)`: $O(n)$ time, as it involves search then shift.
+* These $O(n)$ operations can become significant bottlenecks for large datasets requiring frequent modifications at non-end positions.
+:::
+
+---
+
+## Recalling List Performance
+
+::: {.incremental}
+* These $O(n)$ operations can become significant bottlenecks for large datasets requiring frequent modifications at non-end positions.
+:::
+
+---
+
+## Specialized Data Structures
+
+::: {.incremental}
+* To mitigate these performance issues for specific access patterns, specialized data structures are employed.
+* This lecture introduces three fundamental Abstract Data Types (ADTs):
+    * **Stacks**
+    * **Queues**
+    * **Deques**
+* Each offers optimized performance for particular insertion and removal rules, abstracting away underlying implementation complexities.
+:::
+
+---
+
+# Stacks: Last-In, First-Out (LIFO)
+
+## Definition and Explanation
+
+::: {.incremental}
+* A **Stack** is a collection of objects that follows the **Last-In, First-Out (LIFO)** principle.
+* Elements are inserted and removed only from one end, traditionally referred to as the "top" of the stack.
+* **Core Operations:**
+    * `S.push(e)`: Adds element `e` to the top of stack `S`.
+    * `S.pop()`: Removes and returns the top element from stack `S`; an error occurs if the stack is empty.
+:::
+
+---
+
+## Definition and Explanation
+
+::: {.incremental}
+* **Auxiliary Operations:**
+    * `S.top()`: Returns a reference to the top element without removing it.
+    * `S.is_empty()`: Returns `True` if the stack contains no elements.
+    * `len(S)`: Returns the number of elements in the stack.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Efficiency:** Stacks offer $O(1)$ amortized time for both `push` and `pop` operations when implemented with a dynamic array (like a Python list where the top is aligned with the list's end).
+    * This avoids the $O(n)$ penalty of `list.insert(0, element)` or `list.pop(0)`.
+* **Conceptual Clarity:** Enforces the LIFO access pattern, preventing accidental manipulation of elements not at the top. This enhances software robustness and simplifies logic for problems inherently LIFO.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Space Efficiency:** Typically $O(n)$ space, proportional to the number of elements.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Web Browser History:** When navigating web pages, each new page visited is "pushed" onto a history stack. Clicking the "back" button "pops" the most recently visited page, returning to the previous one.
+* **"Undo" Mechanism in Text Editors:** Each editing operation (typing, deleting, formatting) is "pushed" onto an undo stack. When a user selects "undo", the last operation is "popped" and reversed, reverting the document to a previous state.
+:::
+
+---
+
+# Queues: First-In, First-Out (FIFO)
+
+## Definition and Explanation
+
+::: {.incremental}
+* A **Queue** is a collection of objects that adheres to the **First-In, First-Out (FIFO)** principle.
+* Elements are inserted at one end (the "back" or "rear") and removed from the other end (the "front").
+* **Core Operations:**
+    * `Q.enqueue(e)`: Adds element `e` to the back of queue `Q`.
+    * `Q.dequeue()`: Removes and returns the first element from queue `Q`; an error occurs if the queue is empty.
+:::
+
+---
+
+## Definition and Explanation
+
+::: {.incremental}
+* **Auxiliary Operations:**
+    * `Q.first()`: Returns a reference to the element at the front of queue `Q` without removing it.
+    * `Q.is_empty()`: Returns `True` if the queue contains no elements.
+    * `len(Q)`: Returns the number of elements in the queue.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Efficiency vs. Lists:** A naive list-based implementation using `list.pop(0)` for `dequeue()` would be inefficient ($O(n)$) due to element shifting.
+* **Optimized Array Implementation:** Queues are typically implemented using a **circular array** to achieve $O(1)$ amortized time for `enqueue` and `dequeue`.
+    * This involves maintaining `front` and `size` pointers and wrapping around the array's end using modulo arithmetic. This avoids costly shifts.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Conceptual Clarity:** Enforces fair, ordered processing, ensuring that the oldest item is always served first.
+* **Space Efficiency:** Typically $O(n)$ space, proportional to the number of elements, even with resizing and circular usage.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Customer Service Call Centers:** Calls are placed in a queue and answered in the order they were received, ensuring fairness to waiting customers.
+* **Printer Spooling:** Documents sent to a networked printer are added to a print queue. The printer processes these documents in the order they arrived.
+* **Operating System Task Scheduling:** In multi-tasking environments, CPU tasks might be placed in a queue, processed one by one, and then re-enqueued for subsequent time slices in a round-robin fashion.
+:::
+
+---
+
+# Deques: Double-Ended Queues
+
+## Definition and Explanation
+
+::: {.incremental}
+* A **Deque** (pronounced "deck") is a **double-ended queue**.
+* It combines the functionalities of both a stack and a queue, allowing insertions and removals from *both* the front and the back.
+* **Core Operations:**
+    * `D.add_first(e)`: Adds `e` to the front.
+    * `D.add_last(e)`: Adds `e` to the back.
+    * `D.delete_first()`: Removes and returns from the front.
+    * `D.delete_last()`: Removes and returns from the back.
+:::
+
+---
+
+## Definition and Explanation
+
+::: {.incremental}
+* **Auxiliary Operations:**
+    * `D.first()`: Returns first element.
+    * `D.last()`: Returns last element.
+    * `D.is_empty()`: Checks if empty.
+    * `len(D)`: Returns number of elements.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Versatility:** A deque is more general than both a stack and a queue. It can function purely as a stack or purely as a queue by selecting appropriate operations.
+* **Efficient Bidirectional Operations:** Deques are typically implemented using a **circular array** or **doubly linked list** to ensure all add/delete operations (from both ends) run in $O(1)$ amortized time.
+    * This makes them highly flexible for scenarios requiring efficient additions/removals from either end.
+* **Space Efficiency:** $O(n)$ space, similar to stacks and queues.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Web Browser History (Advanced):** A deque can support more complex history manipulation, such as jumping to recently closed tabs, effectively allowing additions/removals from both ends of a Browse session history.
+* **Job Scheduling (Advanced):** In operating systems, critical tasks might be added to the front of a queue, while less urgent ones are added to the back. If a user cancels a task, it can be efficiently removed from either end.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Palindrome Checker:** A deque can efficiently check if a string is a palindrome by adding characters to the back and then simultaneously removing and comparing from both the front and back.
+:::
+
+---
+
+# Linked Lists: A Distributed Alternative
+
+## Addressing List Limitations
+
+::: {.incremental}
+* Recall that Python's array-based lists have key limitations:
+    1.  **Variable Length vs. Capacity:** The underlying array might be much larger than the actual number of elements, wasting space.
+    2.  **Amortized Bounds:** While generally efficient, $O(n)$ worst-case re-sizing operations can be problematic in real-time systems.
+    3.  **Inefficient Middle Operations:** Insertions and deletions at interior positions are expensive ($O(n)$).
+:::
+
+---
+
+## Addressing List Limitations
+
+::: {.incremental}
+* **Linked lists** offer a fundamentally different approach to storing sequences, addressing these drawbacks.
+:::
+
+---
+
+## Definition and Explanation
+
+::: {.incremental}
+* A **Linked List** is a linear collection of elements, where the order is determined by explicit links between objects, rather than physical contiguity in memory.
+* It relies on a distributed representation:
+    * Each element is stored in a lightweight object called a **node**.
+    * Each node maintains a reference (or "link" / "pointer") to its element and one or more references to neighboring nodes.
+
+:::
+
+---
+
+## Definition and Explanation
+
+::: {.incremental}
+* **Types of Linked Lists:**
+    * **Singly Linked List:** Each node points only to the `next` node in the sequence.
+    * **Doubly Linked List:** Each node points to both the `prev`ious and `next` nodes in the sequence, allowing bidirectional traversal.
+    * **Circularly Linked List:** The last node's `next` pointer points back to the first node, forming a loop.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Efficient Middle Operations:** Linked lists excel at $O(1)$ worst-case time for insertions and deletions at *arbitrary positions*, provided you have a reference to the node at or near that position.
+    * This is a significant advantage over array-based lists for such operations.
+* **Dynamic Size without Resizing:** Memory is allocated on a per-node basis, so there's no need for expensive block re-allocations and copying. The list naturally grows and shrinks as needed.
+:::
+
+---
+
+## Rationale for Use
+
+::: {.incremental}
+* **Guaranteed Worst-Case Times:** Many operations offer $O(1)$ *worst-case* time bounds, unlike the amortized bounds of dynamic arrays. This is crucial for real-time systems where consistent performance is paramount.
+* **Space Efficiency (Relative):** While each node requires extra space for pointers, the overall space is $O(n)$, proportional to the number of elements.
+:::
+
+---
+
+## Trade-offs and Limitations
+
+::: {.incremental}
+* **No $O(1)$ Indexing:** The primary disadvantage is the inability to access elements directly by an integer index ($list[k]$) in $O(1)$ time. Accessing the $k$-th element requires traversing $k$ nodes from the beginning (or end for doubly linked), resulting in $O(k)$ time.
+* **Higher Constant Factors:** Even for operations with the same asymptotic performance (e.g., $O(1)$), linked lists might have slightly higher constant factors due to individual node allocations and pointer manipulations.
+:::
+
+---
+
+## Trade-offs and Limitations
+
+::: {.incremental}
+* **Memory Overhead:** Each node requires additional memory for its pointers, which can be more memory-intensive than compact arrays for primitive types.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Text Editors (Document Representation):** While characters could be in an array, frequent insertions/deletions (e.g., at a cursor position) in large documents are much more efficient with linked lists, as only local pointer changes are needed, not mass shifts.
+* **Image Viewers/Slideshows:** Storing a sequence of images. Moving "next" or "previous" is an $O(1)$ operation, and inserting/deleting an image (e.g., in a photo album) doesn't require re-indexing subsequent images.
+:::
+
+---
+
+## Real-World Examples
+
+::: {.incremental}
+* **Music Playlists:** Songs in a playlist can be represented as nodes. Adding, removing, or reordering songs (by changing pointers) is very efficient without affecting other songs' positions.
+* **Operating System Memory Management (Free List):** Linked lists are often used internally by operating systems to manage available blocks of memory (free list).
+:::
+
+---
+
+## References
+
+[1] Chapter 6, Chapter 7 | Michael, T. G. (2013). *Data Structures and Algorithms in Python*. Wiley.
+
+---
+
+## {.center #logo-end-slide data-background-color="#001f3f"}
+
+![](../data/logo/blue_green.png)
+
+Boffin Institute of Data Science
+
+thenuwanj@boffin.lk
